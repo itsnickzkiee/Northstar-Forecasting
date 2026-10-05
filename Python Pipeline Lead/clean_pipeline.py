@@ -50,9 +50,18 @@ parsed_dates.loc[mask] = pd.to_datetime(
 clean["date"] = parsed_dates
 
 print("\n[DATE CLEANING]")
-print("Parsed dates:", clean["date"].notna().sum())
-print("Missing dates:", clean["date"].isna().sum())
 
+parsed_count = clean["date"].notna().sum()
+invalid_date_count = clean["date"].isna().sum()
+
+print("Parsed dates:", parsed_count)
+print("Unparseable dates:", invalid_date_count)
+
+# Remove records with unparseable dates
+clean = clean.dropna(subset=["date"]).copy()
+
+print("Rows removed due to unparseable dates:", invalid_date_count)
+print("Rows remaining after date cleaning:", len(clean))
 
 # ============================================================
 # 4. STANDARDIZE MARKET
@@ -207,7 +216,7 @@ print(
 
 print(
     "Rows with missing dates excluded from key check:",
-    (~valid_date_rows).sum()
+    0
 )
 
 if business_key_duplicates.sum() > 0:
@@ -243,15 +252,15 @@ else:
 cleaning_log = pd.DataFrame([
     {
         "issue": "Mixed date formats",
-        "count": 364900,
+        "count": parsed_count,
         "action": "Converted valid dates to datetime",
         "reason": "Standardize dates for reliable date-based analysis"
     },
     {
-        "issue": "Missing dates",
-        "count": 80,
-        "action": "Retained as missing (NaT)",
-        "reason": "Date could not be reliably reconstructed"
+        "issue": "Unparseable dates",
+        "count": invalid_date_count,
+        "action": "Removed records with unparseable dates",
+        "reason": "Date could not be reliably reconstructed and was excluded to avoid unreliable date-based analysis"
     },
     {
         "issue": "Market trailing whitespace",

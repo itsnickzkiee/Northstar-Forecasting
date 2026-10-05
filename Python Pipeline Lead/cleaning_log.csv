@@ -1,6 +1,6 @@
 issue,count,action,reason
 Mixed date formats,364900,Converted valid dates to datetime,Standardize dates for reliable date-based analysis
-Missing dates,80,Retained as missing (NaT),Date could not be reliably reconstructed
+Unparseable dates,80,Removed records with unparseable dates,Date could not be reliably reconstructed and was excluded to avoid unreliable date-based analysis
 Market trailing whitespace,325,Trimmed whitespace,Standardize market labels
 Inconsistent channel capitalization,325,Standardized channel labels,Standardize category values
 Mixed promo flag formats,1200,Converted to 0/1,Create consistent binary representation
